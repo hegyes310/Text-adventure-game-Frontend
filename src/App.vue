@@ -1,101 +1,37 @@
 <script setup>
 import useAdventureStore from './stores/adventureStore';
 import ScrollPanel from 'primevue/scrollpanel';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import TextArea from 'primevue/textarea';
 import Fieldset from 'primevue/fieldset';
 import Shop from './components/Shop.vue';
-//import Fight from './components/Fight.vue';
-//import CharacterMaker from './components/CharacterMaker.vue';
 import NeworLoadGame from './components/NeworLoadGame.vue';
+import ChatView from './components/ChatView.vue';
 
 const adventureStore = useAdventureStore();
 
-function apicall() {
-  adventureStore.sendPlayerMessage();
-}
-
-const getMessages = computed(() => {
-  return adventureStore.openAIAnswers;
-})
-
-function startGameB() {
-  adventureStore.startGame();
-}
-
-async function agentTest() {
-  await adventureStore.agentes("asd");
-}
-
-const getFirstMessageFromGameMaster = computed(() => {
-  return adventureStore.firstMessageFromGameMaster;
-});
-
-function proba() {
-  adventureStore.proba();
-}
-
-const add_message_aiandplayer = () => {
-  const ai = "heble heble";
-  const playerinput = adventureStore.playerMessage;
-  let objectToStore = {
-        input: playerinput,
-        respone: ai
-      }
-      console.log(adventureStore.playerMessage);
-  adventureStore.openAIAnswers.push(objectToStore);
-  adventureStore.playerMessage = "";
-}
-
-const add_message_ai = () => {
-  const ai = "heble heble";
-  const playerinput = adventureStore.playerMessage;
-  let objectToStore = {
-        input: "",
-        respone: ai
-      }
-  adventureStore.openAIAnswers.push(objectToStore);
-  adventureStore.playerMessage = "";
-}
-
-const add_message_player = () => {
-  const ai = "heble heble";
-  const playerinput = adventureStore.playerMessage;
-  let objectToStore = {
-        input: playerinput,
-        respone: ""
-      }
-  adventureStore.openAIAnswers.push(objectToStore);
-  adventureStore.playerMessage = "";
-}
 
 const isShopActive = computed(() => {
   return adventureStore.shopComponent;
-})
-
-/*
-<span v-if="answer.respone"><span>Gamemaster: </span>{{ answer.respone }}</span> <br>
-        <span v-if="answer.input">You:{{ answer.input }}</span>
-*/
-
-/*
-<button @click="add_message_aiandplayer()">aiandplayer</button>
-    <button @click="add_message_ai()">ai</button>
-    <button @click="add_message_player()">player</button>
-    <button @click="startGameB()">Start</button>
-*/
+});
 
 const returnIsFightActive = computed(() => {
   return adventureStore.fightComponent;
 });
-const s = false;
+
+const thePlayerIsLoadingOrCreateNewGame = ref(true);
+
+const setGameToReady = () => {
+  thePlayerIsLoadingOrCreateNewGame.value = false;
+};
 </script>
 
 <template>
   <div class="container">
-    <NeworLoadGame>
-
-    </NeworLoadGame>
+    <NeworLoadGame v-if="thePlayerIsLoadingOrCreateNewGame" :set-game-to-ready="setGameToReady"/>
+    <ChatView v-if="!thePlayerIsLoadingOrCreateNewGame" />
+    <Shop ></Shop>
+    <Fight :is-the-player-fighting-prop="returnIsFightActive"></Fight>
   </div>
   <!--
   <div v-if="s" class="mainGrid">
