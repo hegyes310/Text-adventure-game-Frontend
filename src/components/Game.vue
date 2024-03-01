@@ -22,7 +22,7 @@ adventureStore.openAIAnswers.push(objectToStore);
 objectToStore = {
         input: "kerdes ketto",
         respone: "valasz ketto"
-}
+} 
 adventureStore.openAIAnswers.push(objectToStore);
 </script>
 
