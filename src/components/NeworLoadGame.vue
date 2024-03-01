@@ -10,6 +10,11 @@ import PlayerProfilePicture from './newgame/PlayerProfilePicture.vue';
 import PlayerName from './newgame/PlayerName.vue';
 import SelectEquipments from './newgame/SelectEquipments.vue';
 import useAdventureStore from '../stores/adventureStore';
+import NewGameName from './newgame/NewGameName.vue';
+
+const props = defineProps({
+    setGameToReady: Function
+});
 
 const adventureStore = useAdventureStore();
 
@@ -45,8 +50,9 @@ const loadGames = async () => {
 };
 
 
-
 const setSelectedGame = async () => {
+    const createdPlayerInfos = await adventureStore.setSelectedGame(selectedSavedGame.value);
+    /*
     const responseFetch = await fetch('http://127.0.0.1:5000/setSelectedGame', {
       method: 'POST',
       headers: {
@@ -60,7 +66,10 @@ const setSelectedGame = async () => {
     if (firstMessageContent.status === "success") {
         console.log("sikeres betöltés");
     }
+    */
 
+    player.setPlayerInfos(createdPlayerInfos)
+    props.setGameToReady();
 };
 
 
@@ -69,6 +78,7 @@ const createNewGame = () => {
     console.log("playerFaction: ", player.playerFaction);
     player.playerPortrait = pictures.characterSelectPF.default;
     isThePlayerCreatingNewGame.value = true;
+    setPlayerLocation("Clear sky base");
     steps.value++;
 };
 
@@ -88,6 +98,10 @@ const setPlayerPortrait = (portrait) => {
     player.playerPortrait = portrait;
 };
 
+const setPlayerLocation = (location) => {
+    player.playerLocation = location;
+};
+
 const isInvalidPlayerName = computed(() => {
     return player.playerName.length <=0 && isThisStep(3);
 });
@@ -98,10 +112,31 @@ const startTheGame = async () => {
         "Faction": player.playerFaction,
         "Portrait": player.playerPortrait,
         "Gold": player.playerMoney,
-        "Equipments": player.playerEquipments
+        "Equipments": player.playerEquipments,
+        "GameName": player.playerNewGameName,
+        "Location": player.playerLocation,
+        "NPC": "None"
     };
     console.log("newGameInfos: ", newGameInfos);
     adventureStore.startGame(newGameInfos);
+    props.setGameToReady();
+};
+
+const isInvalidNewGameName = computed(() => {
+    if (player.playerNewGameName.length <= 0) {
+        return true;
+    } else {
+        return false;
+    }
+});
+
+const isThePlayerSelectedALoad = computed(() => {
+    return selectedSavedGame.value !== null; 
+});
+
+const deleteSelectedGame = async () => {
+    console.log("selected game in delete: ", selectedSavedGame.value);
+    adventureStore.deleteGame(selectedSavedGame.value)
 };
 
 </script>
@@ -115,6 +150,7 @@ const startTheGame = async () => {
                 <Button type="button" label="New game" severity="success" @click="createNewGame"/>
                 <Button v-if="!playerIsSelectingSavedGame" label="Load game" severity="success" @click="loadGames"/>
                 <Button v-else label="Load selected game" @click="setSelectedGame"></Button>
+                <Button v-if="isThePlayerSelectedALoad" @click="deleteSelectedGame" label="Delete selected game" severity="warning"></Button>
                 <p v-if="playerIsSelectingSavedGame">Selected game: {{ selectedSavedGame }}</p>
                 <Listbox v-if="playerIsSelectingSavedGame" class="listboxClass" v-model="selectedSavedGame" :options="response" ></Listbox>
             </div>
@@ -126,11 +162,13 @@ const startTheGame = async () => {
             <PlayerName v-if="isThisStep(3)" />
 
             <SelectEquipments v-if="isThisStep(4)"></SelectEquipments>
+
+            <NewGameName v-if="isThisStep(5)"></NewGameName>
         </div>
         <div v-if="steps !== 0" class="containerButtons">
             <Button type="button" label="Back" class="backButton" @click="changeStepsValueByGivenValue(-1)"></Button>
-            <Button v-if="!isInvalidPlayerName && !isThisStep(4)" type="button" label="Next" class="nextButton" :class="isInvalidPlayerName" @click="changeStepsValueByGivenValue(1)"></Button>
-            <Button v-if="isThisStep(4)" type="button" label="Start game" class="nextButton" :class="isInvalidPlayerName" @click="startTheGame()"></Button>
+            <Button v-if="!isThisStep(5)" type="button" label="Next" class="nextButton" :disabled="isInvalidPlayerName" :class="isInvalidPlayerName" @click="changeStepsValueByGivenValue(1)"></Button>
+            <Button v-if="isThisStep(5)" type="button" label="Start game" class="nextButton" :disabled="isInvalidNewGameName" :class="isInvalidPlayerName" @click="startTheGame()"></Button>
         </div>
     </div>
 </template>

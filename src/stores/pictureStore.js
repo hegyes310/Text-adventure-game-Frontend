@@ -16,7 +16,10 @@ const pictureStore = defineStore('pictureStore', {
         bandits1: "src/assets/Bandits_pf/stalker_bandits1.png",
         bandits2: "src/assets/Bandits_pf/stalker_bandits2.png",
         bandits3: "src/assets/Bandits_pf/stalker_bandits3.jpg",
-        default: "src/assets/Unknown/unknown.png"
+        default: "src/assets/Unknown/unknown.png",
+      },
+      gamePictures: {
+        gamemaster: "src/assets/images/gameicons/game_master.png",
       }
     }),
     actions: {

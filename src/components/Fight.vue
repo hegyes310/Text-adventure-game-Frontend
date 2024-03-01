@@ -132,7 +132,7 @@ function incrementTime() {
       time.value = parseInt(time.value) + 1;
       if (playerHealth.value[0].points[2] - 100 <= playerHealth.value[0].points[0] ) {
         playerHealth.value[0].points[2] = playerHealth.value[0].points[0]
-        message.value = "NOOB VAGY!!!"
+        message.value = "Xou died"
         renderAgain();
         toggleTimer();
         

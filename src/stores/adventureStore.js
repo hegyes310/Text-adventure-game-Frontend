@@ -45,24 +45,7 @@ const useAdventureStore = defineStore('adventureStore', {
 
   }),
   actions: {
-    async probaaaaaaa() {
-      console.log("asd");
-      const data = { "messages" : this.playerMessage }
-      const messageIGotBack = await fetch('http://127.0.0.1:5000/proba', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-      });
-
-      const messageContent = await messageIGotBack.json();
-      console.log("messageContent: ", messageContent);
-      console.log("messageContent.response[0]: ", messageIGotBack)
-
-
-    },
-    async main(valamissss) {
+    async main() {
       const data = { "messages" : this.playerMessage }
       const messageIGotBack = await fetch('http://127.0.0.1:5000/chatbot', {
         method: 'POST',
@@ -73,34 +56,34 @@ const useAdventureStore = defineStore('adventureStore', {
       });
 
       const messageContent = await messageIGotBack.json();
-      console.log("messageContent: ", messageContent);
+
       console.log("messageContent.response[0]: ", messageContent[0])
+      console.log("messageContent.response: ", messageContent)
+
       let objectToStore;
-      if (messageContent[0] === "fight" || messageContent[0] === "Fight") {
+      const input = this.playerMessage;
+      objectToStore = {
+        input: input,
+        respone: messageContent["response"],
+        speakerName: messageContent["speaker"],
+        speakerImage: messageContent["speakerImage"]
+      }
+      this.openAIAnswers.push(objectToStore);
+      this.playerMessage = "";
+
+      /*
+      if (messageContent[0]["Situation"] === "fight" || messageContent[0]["Situation"] === "Fight") {
         const input = this.playerMessage;
         const messageResponse = "Player weapon: " + messageContent[1] + ", Enemy weapon: " + messageContent[2];
         objectToStore = {
           input: input,
           respone: messageResponse
         }
-
-      /*
-      this.shopItems = messageContent;
-      this.shopComponent = true;
-
-      const input = this.playerMessage;
-      
-      let objectToStore = {
-        input: input,
-        respone: "As you wish."
-      }
-      */
-      this.fightComponent = true;
+        this.fightComponent = true;
       }
 
-      if (messageContent[0] === "trade") {
-        console.log("messageContent[0]: ", messageContent[1]);
-        this.shopItems = messageContent[1];
+      if (messageContent[0]["Situation"] === "trade") {
+        this.shopItems = messageContent[0]["Data"];
         this.shopComponent = true;
 
         const input = this.playerMessage;
@@ -113,125 +96,69 @@ const useAdventureStore = defineStore('adventureStore', {
         this.openAIAnswers.push(objectToStore);
         this.playerMessage = "";
       }
-
-      
-      
-      this.openAIAnswers.push(objectToStore);
-      this.playerMessage = "";
-      
-    },
-    async agentes(valamissss) {
-      const data = { "messages" : this.playerMessage }
-      const messageIGotBack = await fetch('http://127.0.0.1:5000/chatbot', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-      });
-
-      const messageContent = await messageIGotBack.json();
-      console.log("messageContent: ", messageContent);
-      this.shopItems = messageContent;
-      this.shopComponent = true;
-
-      const input = this.playerMessage;
-      /*
-      let objectToStore = {
-        input: input,
-        respone: "As you wish."
-      }
       */
-
-      //this.openAIAnswers.push(objectToStore);
-      this.playerMessage = "";
       
     },
-    atir(asd){
-      this.probaLista.forEach((itemasd) => {
-        if (itemasd.Type === "Armor") {
-          itemasd.Burn = itemasd.Statistics.Burn;
-          itemasd.Electric_shock = itemasd.Statistics.Electric_shock;
-          itemasd.Chemical_burn = itemasd.Statistics.Chemical_burn;
-          itemasd.Radiation = itemasd.Statistics.Radiation;
-          itemasd.Telepathy = itemasd.Statistics.Telepathy;
-          itemasd.Rupture = itemasd.Statistics.Rupture;
-          itemasd.Bulletproof_cap = itemasd.Statistics.Bulletproof_cap;
-          itemasd.Impact = itemasd.Statistics.Impact;
-        } else {
-          itemasd.Accuracy = itemasd.Statistics.Accuracy;
-          itemasd.Handling = itemasd.Statistics.Handling;
-          itemasd.Damage = itemasd.Statistics.Damage;
-          itemasd.Fire_Rate = itemasd.Statistics.Fire_Rate;
-        }
-        
-      })
-      console.log("probalist: ", this.probaLista);
-    },
-    async proba() {
-      const data = { "messages" : this.playerMessage }
-      const messageIGotBack = await fetch('http://127.0.0.1:5000/qa', {
+
+    async startGame(playerObject) {
+      const firstMessage = await fetch('http://127.0.0.1:5000/createNewGame', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(playerObject)
       });
 
-      const messageContent = await messageIGotBack.json();
-      console.log("messageContent: ", messageContent.response);
-    },
-    async sendPlayerMessage() {
-      /*
-      const chatCompletion = await this.openAI.chat.completions.create({
-        messages: [{ role: 'user', content: this.playerMessage }],
-        model: 'gpt-3.5-turbo',
-        
-      });
+      const firstMessageContent = await firstMessage.json();
+
+      console.log("firstMessageContent: ", firstMessageContent);
       const input = this.playerMessage;
-      const respone = chatCompletion.choices[0].message.content ?? "";
-      const objectToStore = {
-        input: input,
-        respone: respone
-      }
-      this.openAIAnswers.push(objectToStore);
-      this.playerMessage = "";
-      */
-      const data = { "messages" : this.playerMessage }
-      const messageIGotBack = await fetch('http://127.0.0.1:5000/chatbot', {
+        
+        let objectToStore = {
+          input: input,
+          respone: firstMessageContent.response,
+          speakerName: firstMessageContent["speaker"],
+          speakerImage: firstMessageContent["speakerImage"]
+        };
+        
+        this.openAIAnswers.push(objectToStore);
+        this.playerMessage = "";
+
+    },
+
+    async setSelectedGame(selectedSavedGame) {
+      const responseFetch = await fetch('http://127.0.0.1:5000/setSelectedGame', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(selectedSavedGame)
+      });
+  
+      const firstMessageContent = await responseFetch.json();
+
+      console.log("firstMessageContent: ", firstMessageContent);
+
+      return firstMessageContent;
+    },
+
+    async deleteGame(gameName) {
+      const responseFetch = await fetch('http://127.0.0.1:5000/deleteGame', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(gameName)
       });
 
-      const messageContent = await messageIGotBack.json();
+      const deleteMessageContent = await responseFetch.json();
 
-      const input = this.playerMessage;
+      console.log("is delete succesfully: ", deleteMessageContent);
 
-      let objectToStore = {
-        input: input,
-        respone: messageContent.response
-      }
-      this.openAIAnswers.push(objectToStore);
-      this.playerMessage = "";
-  },
-  async startGame(playerObject) {
-    //const data = { "Name" : playerName, "Faction": playerFaction, "Portrait": palyerPortrait, "Money": playerMoney, "Items": items}
-    const firstMessage = await fetch('http://127.0.0.1:5000/start', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(playerObject)
-    });
+      return deleteMessageContent;
+    }
 
-    const firstMessageContent = await firstMessage.json();
-
-    console.log("player: ", firstMessageContent.response);
   }
-}
 })
 
 export default useAdventureStore;

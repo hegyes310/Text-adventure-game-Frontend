@@ -2,11 +2,13 @@ import { defineStore } from 'pinia';
 
 const playerStore = defineStore('playerStore', {
     state: () => ({
-      playerName: "Placeholder",
+      playerName: "Mico",
       playerEquipments: [],
       playerFaction: "",
       playerPortrait: "",
-      playerMoney: 2000
+      playerMoney: 2000,
+      playerNewGameName: "a",
+      playerLocation: ""
     }),
     actions: {
       addMoney(equipment) {
@@ -55,6 +57,15 @@ const playerStore = defineStore('playerStore', {
         console.log("player: ", firstMessageContent.response);
         
         
+      },
+
+      setPlayerInfos(playerInfoArray) {
+        this.playerName = playerInfoArray["Name"];
+        this.playerEquipments = playerInfoArray["Equipments"];
+        this.playerFaction = playerInfoArray["Faction"];
+        this.playerPortrait = playerInfoArray["Portrait"];
+        this.playerMoney = playerInfoArray["Gold"];
+        this.playerLocation = playerInfoArray["Location"]
       }
       
     }

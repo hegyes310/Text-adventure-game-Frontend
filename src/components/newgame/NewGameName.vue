@@ -11,19 +11,19 @@ const props = defineProps({
 
 
 const isInvalid = computed(() => {
-    if (player.playerName.length <= 0) {
+    if (player.playerNewGameName.length <= 0) {
         return "p-invalid"
     } else {
         return "";
     }
-})
+});
 
 </script>
 
 <template>
     <div class="playerNameGird">
-        <p class="playerNameInfo">Enter your name</p>
-        <InputText class="inputNameText" :class="isInvalid" type="text" v-model="player.playerName"></InputText>
+        <p class="playerNameInfo">Enter your new game name</p>
+        <InputText class="inputNameText" :class="isInvalid" type="text" v-model="player.playerNewGameName"></InputText>
     </div>
 </template>
 
