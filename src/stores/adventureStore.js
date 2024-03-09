@@ -137,9 +137,31 @@ const useAdventureStore = defineStore('adventureStore', {
   
       const firstMessageContent = await responseFetch.json();
 
-      console.log("firstMessageContent: ", firstMessageContent);
 
-      return firstMessageContent;
+      for (let index = 0; index < firstMessageContent["history"].length; index++) {
+        if (index % 2 === 1) {
+          let objectToStore = {
+            input: firstMessageContent["history"][index]["response"],
+            speakerName: firstMessageContent["history"][index]["speaker"],
+            speakerImage: firstMessageContent["history"][index]["speakerImage"]
+          };
+          
+          this.openAIAnswers.push(objectToStore);
+          this.playerMessage = "";
+        } 
+        else {
+          let objectToStore = {
+            respone: firstMessageContent["history"][index]["response"],
+            speakerName: firstMessageContent["history"][index]["speaker"],
+            speakerImage: firstMessageContent["history"][index]["speakerImage"]
+          };
+
+          this.openAIAnswers.push(objectToStore);
+          this.playerMessage = "";
+        }
+        
+      }
+      return firstMessageContent["player"];
     },
 
     async deleteGame(gameName) {

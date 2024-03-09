@@ -68,7 +68,7 @@ const setSelectedGame = async () => {
     }
     */
 
-    player.setPlayerInfos(createdPlayerInfos)
+    player.setPlayerInfos(createdPlayerInfos);
     props.setGameToReady();
 };
 

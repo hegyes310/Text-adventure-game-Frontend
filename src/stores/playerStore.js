@@ -60,6 +60,7 @@ const playerStore = defineStore('playerStore', {
       },
 
       setPlayerInfos(playerInfoArray) {
+        console.log("playerInfoArray: ", playerInfoArray);
         this.playerName = playerInfoArray["Name"];
         this.playerEquipments = playerInfoArray["Equipments"];
         this.playerFaction = playerInfoArray["Faction"];
