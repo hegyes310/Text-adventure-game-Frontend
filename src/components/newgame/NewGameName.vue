@@ -45,5 +45,8 @@ const isInvalid = computed(() => {
 
 .playerNameInfo {
     grid-row: 1;
+    font-size: 20px;
+    color: black;
+    font-weight: 600;
 }
 </style>

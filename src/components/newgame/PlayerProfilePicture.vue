@@ -25,7 +25,7 @@ const setPlayerPortrait = (portrait) => {
     <div class="playerProfilePictureGrid">
         
         <div class="imgwithbutton">
-            <p>Current profile picture:</p>
+            <p class="pfpText">Current profile picture:</p>
             <img :src="props.playerPortrait" style="height: 100px; margin-bottom: 15px;"/>
         </div>
         <div class="portraitsInfo">
@@ -37,12 +37,17 @@ const setPlayerPortrait = (portrait) => {
 </template>
 
 <style>
+.pfpText {
+    font-size: 20px;
+    color: black;
+    font-weight: 600;
+}
 .playerProfilePictureGrid {
     display: grid;
     min-width: 100%;
     min-height: 100%;
     grid-template-rows: 20% 60%;
-    grid-gap: 3em;
+    grid-gap: 4em;
     img {
         max-height: 100px;
         max-width: 100px;

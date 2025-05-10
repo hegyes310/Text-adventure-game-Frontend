@@ -1,6 +1,6 @@
 <script setup>
 import pictureProfile from '../../stores/pictureStore';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
 const props = defineProps({
     setChoosenPF: Function,
@@ -9,7 +9,6 @@ const props = defineProps({
 
 const setPF = (picture) => {
     pf.value = picture;
-    //props.setChoosenPF(picture);
 };
 
 const pfPicturesStore = pictureProfile();

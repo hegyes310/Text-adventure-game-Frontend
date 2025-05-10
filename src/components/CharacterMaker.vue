@@ -1,22 +1,10 @@
 <script setup>
 import CharacterInformation from './characterSelection/CharacterInformation.vue';
 import Inventory from './characterSelection/Inventory.vue';
-import { computed, ref, onMounted } from 'vue';
 import playerStore from '../stores/playerStore';
 
 const player = playerStore();
 
-const addMoney = (howMany, equipment) => {
-    player.addMoney(howMany, equipment);
-};
-
-const subtractMoney = (howMany, equipment) => {
-    player.subMoney(howMany, equipment);
-};
-
-const setPlayerFaction = (faction) => {
-    player.playerFaction = faction;
-};
 
 const setPlayerPortrait = (portrait) => {
     player.playerPortrait = portrait;
@@ -35,11 +23,6 @@ const setPlayerName = (name) => {
     <div class="newGameGrid">
         <div class="valami">
             <CharacterInformation :player-money="player.playerMoney" :set-player-faction-props="setPlayerFaction" :set-player-portrait-porps="setPlayerPortrait" :player-faction="player.playerFaction" :player-portrait="player.playerPortrait" :set-player-name-props="setPlayerName"></CharacterInformation>
-        </div>
-        <div class="valami2">
-            <Inventory :player-money="player.playerMoney" :add-money="addMoney" :sub-money="subtractMoney">
-
-            </Inventory>
         </div>
         <div class="startNewGame">
             <button @click="startGame()">Start game</button>

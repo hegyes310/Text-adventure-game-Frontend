@@ -1,35 +1,27 @@
 <script setup>
 import ScrollPanel from 'primevue/scrollpanel';
-import { computed, ref } from 'vue';
-import TextArea from 'primevue/textarea';
+import { computed } from 'vue';
 import Fieldset from 'primevue/fieldset';
 import playerStore from '../stores/playerStore';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import useAdventureStore from '../stores/adventureStore';
 import Avatar from 'primevue/avatar';
-import pictureStore from '../stores/pictureStore';
 
 const player = playerStore();
 const adventureStore = useAdventureStore();
-const pictures = pictureStore();
 
 const addPlayermessage = () => {
     adventureStore.main();
 }
 
 const getMessages = computed(() => {
-  return adventureStore.openAIAnswers;
+  return adventureStore.gamemasterMessages;
 });
 
-console.log("playerportrait:", player.playerPortrait,);
 const isSubmitButtonDisabled = computed(() => {
-    // ide kell majd, hogy addig is az legyen amíg nem válaszol a bot
     return adventureStore.playerMessage.length === 0;
 });
-
-
-
 </script>
 
 <template>
@@ -63,7 +55,7 @@ const isSubmitButtonDisabled = computed(() => {
             </p>
         </ScrollPanel>
         <InputText class="inputNameText" type="text" v-model="adventureStore.playerMessage"></InputText>
-        <Button type="button" label="Submit" class="submitButton" :disabled="isSubmitButtonDisabled" @click="addPlayermessage"></Button>
+        <Button type="button" label="Submit" severity="danger" class="submitButton" :disabled="isSubmitButtonDisabled" @click="addPlayermessage"></Button>
     </div>
     
 </template>

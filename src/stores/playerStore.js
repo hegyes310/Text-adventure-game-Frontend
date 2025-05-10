@@ -3,28 +3,12 @@ import { defineStore } from 'pinia';
 const playerStore = defineStore('playerStore', {
     state: () => ({
       playerName: "Mico",
-      playerEquipments: [],
       playerFaction: "",
       playerPortrait: "",
-      playerMoney: 2000,
       playerNewGameName: "a",
       playerLocation: ""
     }),
     actions: {
-      addMoney(equipment) {
-        this.playerMoney = this.playerMoney + equipment.Cost;
-        this.playerEquipments.pop(equipment)
-      },
-
-      subMoney(equipment) {
-        if (this.playerMoney - equipment.Cost < 0) {
-            console.log("Nincs elég pénzed")
-        } else {
-            this.playerMoney = this.playerMoney - equipment.Cost;
-            this.playerEquipments.push(equipment)
-        }
-        
-      },
 
       setPlayerFaction(faction) {
         this.playerFaction = faction;
@@ -62,10 +46,8 @@ const playerStore = defineStore('playerStore', {
       setPlayerInfos(playerInfoArray) {
         console.log("playerInfoArray: ", playerInfoArray);
         this.playerName = playerInfoArray["Name"];
-        this.playerEquipments = playerInfoArray["Equipments"];
         this.playerFaction = playerInfoArray["Faction"];
         this.playerPortrait = playerInfoArray["Portrait"];
-        this.playerMoney = playerInfoArray["Gold"];
         this.playerLocation = playerInfoArray["Location"]
       }
       
